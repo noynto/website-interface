@@ -1,0 +1,38 @@
+name: Tag pushed
+on:
+  push:
+    tags:
+      - "**"
+env:
+  IMAGE_REGISTRY: ghcr.io
+  IMAGE_PATH: ${{ github.repository }}
+jobs:
+  publish-image:
+    name: Publish the image of the code
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      packages: write
+    steps:
+      - uses: actions/checkout@v4.1.3
+      - uses: docker/login-action@v3.1.0
+        with:
+          registry: ${{ env.IMAGE_REGISTRY }}
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+      - uses: docker/metadata-action@v5.5.1
+        id: meta
+        with:
+          images: ${{ env.REGISTRY }}/${{ env.IMAGE_PATH }}
+      - uses: docker/build-push-action@v5.3.0
+        id: push
+        with:
+          context: .
+          push: true
+          tags: ${{ steps.meta.outputs.tags }}
+          labels: ${{ steps.meta.outputs.labels }}
+      - uses: actions/attest-build-provenance@v1.0.0
+        with:
+          subject-name: ${{ env.REGISTRY }}/${{ env.IMAGE_PATH}}
+          subject-digest: ${{ steps.push.outputs.digest }}
+          push-to-registry: true
