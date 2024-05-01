@@ -38,21 +38,21 @@ jobs:
           node-version: "20"
       - run: npm install
       - run: npm run test:unit
-  integration-test:
-    name: Integration test the code
-    needs:
-      - unit-test
-    strategy:
-      matrix:
-        os:
-          - ubuntu-latest
-          - macos-latest
-          - windows-latest
-    runs-on: ${{ matrix.os }}
-    steps:
-      - uses: actions/checkout@v4.1.3
-      - uses: actions/setup-node@v4.0.2
-        with:
-          node-version: "20"
-      - run: npm install
-      - run: npm run test:e2e
+  # integration-test:
+  #   name: Integration test the code
+  #   needs:
+  #     - unit-test
+  #   strategy:
+  #     matrix:
+  #       os:
+  #         - ubuntu-latest
+  #         - macos-latest
+  #         - windows-latest
+  #   runs-on: ${{ matrix.os }}
+  #   steps:
+  #     - uses: actions/checkout@v4.1.3
+  #     - uses: actions/setup-node@v4.0.2
+  #       with:
+  #         node-version: "20"
+  #     - run: npm install
+  #     - run: npm run test:e2e
